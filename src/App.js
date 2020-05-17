@@ -5,13 +5,21 @@ import Header from './components/Header'
 import ToyForm from './components/ToyForm'
 import ToyContainer from './components/ToyContainer'
 
-import data from './data'
+// import data from './data'
+
+// TOYTALES 
+// -- App
+//  -- Header 
+//  -- ToyFrom 
+//  -- ToyContainer
+//    --ToyCard
 
 
 class App extends React.Component{
 
   state = {
-    display: false
+    display: false,
+    data: []
   }
 
   handleClick = () => {
@@ -21,20 +29,32 @@ class App extends React.Component{
     })
   }
 
+  getToys = () => {
+    fetch('http://localhost:3000/toys')
+    .then(resp => resp.json())
+    .then(toys => this.setState({data: toys}))
+  }
+
+  componentDidMount = () => {
+    this.getToys()
+  }
+
+  
+
   render(){
     return (
       <>
         <Header/>
         { this.state.display
             ?
-          <ToyForm/>
+          <ToyForm getToys={this.getToys}/>
             :
           null
         }
         <div className="buttonContainer">
           <button onClick={this.handleClick}> Add a Toy </button>
         </div>
-        <ToyContainer/>
+        <ToyContainer toys={this.state.data} getToys={this.getToys}/>
       </>
     );
   }
